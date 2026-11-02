@@ -1,0 +1,2100 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Management System (SMS) | Smart Student Administration</title>
+    <meta name="description" content="BSIT University Web Technology Project: Smart Student Administration & Academic Management Platform featuring student CRUD, attendance, examination, results, fees, timetable, analytics, and reports." />
+    <meta property="og:title" content="Student Management System (SMS)" />
+    <meta property="og:description" content="Smart Student Administration & Academic Management Platform" />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome Icons 6.6.0 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Chart.js 4.4.7 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Toast Notifications Hub -->
+    <div id="toast-container"></div>
+
+    <!-- Printable Header for Print Mode -->
+    <div class="print-header-brand">
+      <h1>UNIVERSITY STUDENT MANAGEMENT SYSTEM</h1>
+      <p>Smart Student Administration & Academic Management Platform &bull; BSIT Web Technology</p>
+      <p id="print-report-meta" style="font-size: 8.5pt; color: #64748b; margin-top: 5px;"></p>
+    </div>
+
+    <!-- ======================================================================
+         LOGIN / AUTHENTICATION PAGE
+         ====================================================================== -->
+    <div id="login-view" class="login-page-wrapper">
+      <div class="login-card-container">
+        <!-- Brand Information Panel -->
+        <div class="login-branding-panel">
+          <div>
+            <div class="brand-badge">
+              <i class="fa-solid fa-graduation-cap"></i> University Portal
+            </div>
+            <h2>Student Management System</h2>
+            <p>Smart Student Administration &amp; Academic Management Platform designed for modern universities and educational institutes.</p>
+            
+            <ul class="brand-feature-list">
+              <li><i class="fa-solid fa-circle-check"></i> Comprehensive Student Records &amp; Profiles</li>
+              <li><i class="fa-solid fa-circle-check"></i> Automated Attendance &amp; Performance Metrics</li>
+              <li><i class="fa-solid fa-circle-check"></i> Examination Schedules &amp; GPA Calculation</li>
+              <li><i class="fa-solid fa-circle-check"></i> Fee Ledger, Timetable &amp; CSV Reports</li>
+            </ul>
+          </div>
+
+          <div class="brand-footer-note">
+            <i class="fa-solid fa-shield-halved"></i> Academic Prototype &bull; Powered by Vanilla JavaScript &amp; LocalStorage
+          </div>
+        </div>
+
+        <!-- Login Form Panel -->
+        <div class="login-form-panel">
+          <div class="login-form-header">
+            <h3>Sign in to Portal</h3>
+            <p>Enter your institutional credentials to access your dashboard</p>
+          </div>
+
+          <!-- Quick Demo Credentials Box -->
+          <div class="demo-credentials-box">
+            <div class="demo-credentials-title">
+              <i class="fa-solid fa-bolt"></i> Quick Demo Login
+            </div>
+            <div class="demo-pills-row">
+              <button type="button" class="demo-pill-btn" id="btn-fill-admin">
+                <i class="fa-solid fa-user-shield"></i> Admin: <strong>admin@sms.com</strong>
+              </button>
+              <button type="button" class="demo-pill-btn" id="btn-fill-student">
+                <i class="fa-solid fa-user-graduate"></i> Student: <strong>student@sms.com</strong>
+              </button>
+            </div>
+          </div>
+
+          <form id="login-form" novalidate>
+            <div class="form-group" style="margin-bottom: 1.15rem;">
+              <label class="form-label" for="login-email">Email Address <span class="required">*</span></label>
+              <input type="email" id="login-email" class="form-control" placeholder="e.g. admin@sms.com" required autocomplete="email">
+              <span class="form-error-msg" id="login-email-error">Please enter a valid email address</span>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0.5rem;">
+              <label class="form-label" for="login-password">Password <span class="required">*</span></label>
+              <div class="password-input-group">
+                <input type="password" id="login-password" class="form-control" placeholder="Enter password" required autocomplete="current-password">
+                <button type="button" class="password-toggle-btn" id="toggle-password" title="Show / Hide Password">
+                  <i class="fa-solid fa-eye" id="password-eye-icon"></i>
+                </button>
+              </div>
+              <span class="form-error-msg" id="login-password-error">Password is required (min 6 characters)</span>
+            </div>
+
+            <div class="remember-forgot-row">
+              <label class="remember-label">
+                <input type="checkbox" id="login-remember" checked>
+                <span>Remember me</span>
+              </label>
+              <a href="#" id="link-forgot-password">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+              <i class="fa-solid fa-right-to-bracket"></i> Login to System
+            </button>
+          </form>
+
+          <p style="font-size: 0.76rem; color: var(--text-muted); text-align: center; margin-top: 1.5rem;">
+            Notice: Authentication runs in front-end browser sandbox using LocalStorage.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         MAIN APPLICATION SHELL
+         ====================================================================== -->
+    <div id="app-container" style="display: none;">
+      <!-- Mobile Sidebar Overlay Backdrop -->
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+      <!-- Left Sidebar Navigation -->
+      <aside class="sidebar" id="main-sidebar">
+        <!-- Sidebar Brand -->
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <div class="logo-icon-box">
+              <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="logo-text">
+              <h1>SMS Portal</h1>
+              <span>BSIT University</span>
+            </div>
+          </div>
+          <button class="sidebar-toggle-btn" id="sidebar-collapse-btn" title="Toggle Sidebar">
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Menus -->
+        <nav class="sidebar-nav-container">
+          <div class="nav-section-title">Main</div>
+          <div class="nav-item active" data-view="dashboard">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </div>
+
+          <div class="nav-section-title">Academic Records</div>
+          <div class="nav-item" data-view="students">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Students</span>
+            <span class="nav-badge" id="nav-student-count">0</span>
+          </div>
+          <div class="nav-item" data-view="teachers">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Faculty / Teachers</span>
+            <span class="nav-badge" id="nav-teacher-count">0</span>
+          </div>
+          <div class="nav-item" data-view="departments">
+            <i class="fa-solid fa-building-columns"></i>
+            <span>Departments</span>
+          </div>
+          <div class="nav-item" data-view="classes">
+            <i class="fa-solid fa-users-rectangle"></i>
+            <span>Classes &amp; Sections</span>
+          </div>
+
+          <div class="nav-section-title">Operations</div>
+          <div class="nav-item" data-view="attendance">
+            <i class="fa-solid fa-clipboard-user"></i>
+            <span>Attendance</span>
+          </div>
+          <div class="nav-item" data-view="exams">
+            <i class="fa-solid fa-file-signature"></i>
+            <span>Examinations</span>
+          </div>
+          <div class="nav-item" data-view="results">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <span>Results &amp; Grades</span>
+          </div>
+          <div class="nav-item" data-view="fees">
+            <i class="fa-solid fa-receipt"></i>
+            <span>Fee Management</span>
+          </div>
+          <div class="nav-item" data-view="timetable">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Class Timetable</span>
+          </div>
+
+          <div class="nav-section-title">Analytics &amp; System</div>
+          <div class="nav-item" data-view="reports">
+            <i class="fa-solid fa-file-excel"></i>
+            <span>Reports &amp; Export</span>
+          </div>
+          <div class="nav-item" data-view="settings">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings &amp; Info</span>
+          </div>
+        </nav>
+
+        <!-- Sidebar Footer / Current User -->
+        <div class="sidebar-footer">
+          <div class="sidebar-user">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="User Profile" class="user-avatar" id="sidebar-user-avatar">
+            <div class="user-info">
+              <div class="user-name" id="sidebar-user-name">Dr. Administrator</div>
+              <div class="user-role-badge" id="sidebar-user-role">Super Admin</div>
+            </div>
+            <button class="logout-icon-btn" id="btn-sidebar-logout" title="Sign Out">
+              <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Container -->
+      <div class="main-wrapper">
+        <!-- Top Navigation Bar -->
+        <header class="top-header">
+          <div class="header-left">
+            <button class="mobile-menu-btn" id="mobile-toggle-btn">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="header-search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="global-search-input" placeholder="Search students, teachers, subjects or IDs...">
+            </div>
+          </div>
+
+          <div class="header-right">
+            <div class="academic-badge">
+              <i class="fa-solid fa-calendar-check"></i>
+              <span>Session 2024-2028</span>
+            </div>
+
+            <!-- Theme Switcher -->
+            <button class="icon-button" id="theme-toggle-btn" title="Toggle Dark / Light Mode">
+              <i class="fa-solid fa-moon" id="theme-icon"></i>
+            </button>
+
+            <!-- Notifications Bell -->
+            <div style="position: relative;">
+              <button class="icon-button" id="notif-toggle-btn" title="Notifications">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge-dot" id="notif-badge" style="display: none;"></span>
+              </button>
+
+              <div class="dropdown-menu" id="notif-dropdown">
+                <div class="dropdown-header" style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <div class="dropdown-title">System Notifications</div>
+                    <div class="dropdown-subtitle" id="notif-unread-text">0 Unread alerts</div>
+                  </div>
+                  <button class="btn btn-sm btn-secondary" id="btn-mark-all-read" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;">Mark Read</button>
+                </div>
+                <div class="dropdown-body" id="notif-list-container">
+                  <!-- Populated dynamically -->
+                </div>
+                <div style="padding: 0.5rem; text-align: center; border-top: 1px solid var(--border-color); background: var(--bg-muted);">
+                  <button class="btn btn-sm btn-secondary" id="btn-clear-notifications" style="font-size: 0.75rem;">Clear All</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Menu -->
+            <div class="header-profile-menu">
+              <div class="profile-trigger" id="profile-dropdown-trigger">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Avatar" class="profile-trigger-avatar" id="header-avatar">
+                <div class="profile-trigger-info">
+                  <span class="profile-trigger-name" id="header-user-name">Dr. Administrator</span>
+                  <span class="profile-trigger-role" id="header-user-role">Administrator</span>
+                </div>
+                <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: var(--text-muted); margin-left: 4px;"></i>
+              </div>
+
+              <div class="dropdown-menu" id="profile-dropdown">
+                <div class="dropdown-header">
+                  <div class="dropdown-title" id="menu-dropdown-name">Dr. Administrator</div>
+                  <div class="dropdown-subtitle" id="menu-dropdown-email">admin@sms.com</div>
+                </div>
+                <div class="dropdown-item" id="menu-item-settings">
+                  <i class="fa-solid fa-sliders"></i> System Settings
+                </div>
+                <div class="dropdown-item" id="menu-item-reset-demo">
+                  <i class="fa-solid fa-rotate-left"></i> Reload Demo Data
+                </div>
+                <div class="dropdown-item" id="menu-item-logout" style="color: var(--danger);">
+                  <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Viewport For Dynamic Pages -->
+        <main class="content-viewport" id="content-viewport">
+          
+          <!-- ================================================================
+               1. DASHBOARD VIEW
+               ================================================================ -->
+          <section class="view-section active" id="view-dashboard">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Academic Dashboard</h2>
+                <p class="view-subtitle">Executive overview of enrollment, faculty, attendance, examinations, and fee collections.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-dash-refresh"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+                <button class="btn btn-primary btn-sm" id="btn-dash-quick-add"><i class="fa-solid fa-user-plus"></i> Register Student</button>
+              </div>
+            </div>
+
+            <!-- Statistics Cards Grid -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon color-blue">
+                  <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Students</div>
+                  <div class="stat-value" id="stat-total-students">0</div>
+                  <div class="stat-trend trend-up">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <span id="stat-active-students">0 Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-indigo">
+                  <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Faculty</div>
+                  <div class="stat-value" id="stat-total-teachers">0</div>
+                  <div class="stat-trend trend-up">
+                    <i class="fa-solid fa-check"></i>
+                    <span>All Departments</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-emerald">
+                  <i class="fa-solid fa-users-rectangle"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Active Classes</div>
+                  <div class="stat-value" id="stat-total-classes">0</div>
+                  <div class="stat-trend trend-neutral">
+                    <span id="stat-total-depts">0 Departments</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-cyan">
+                  <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Today's Attendance</div>
+                  <div class="stat-value" id="stat-attendance-rate">0%</div>
+                  <div class="stat-trend trend-up">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span id="stat-attendance-counts">0 Present</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-amber">
+                  <i class="fa-solid fa-file-pen"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Examinations</div>
+                  <div class="stat-value" id="stat-total-exams">0</div>
+                  <div class="stat-trend trend-neutral">
+                    <span>Midterm &amp; Final</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-purple">
+                  <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Fee Collection</div>
+                  <div class="stat-value" id="stat-total-fees">$0</div>
+                  <div class="stat-trend trend-down">
+                    <span id="stat-due-fees">$0 Due</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Action Bar -->
+            <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(to right, var(--bg-card), var(--bg-muted));">
+              <div class="card-body" style="padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 38px; height: 38px; border-radius: var(--radius-md); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  </div>
+                  <div>
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--text-main);">Quick Management Actions</h4>
+                    <p style="font-size: 0.78rem; color: var(--text-secondary);">Direct shortcuts to execute frequent operational tasks.</p>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn btn-secondary btn-sm" id="btn-quick-attendance"><i class="fa-solid fa-calendar-check"></i> Mark Attendance</button>
+                  <button class="btn btn-secondary btn-sm" id="btn-quick-add-exam"><i class="fa-solid fa-calendar-plus"></i> Schedule Exam</button>
+                  <button class="btn btn-secondary btn-sm" id="btn-quick-add-result"><i class="fa-solid fa-marker"></i> Record Results</button>
+                  <button class="btn btn-secondary btn-sm" id="btn-quick-add-fee"><i class="fa-solid fa-receipt"></i> Collect Fee</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="dashboard-grid-2">
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title"><i class="fa-solid fa-chart-column" style="color: var(--primary);"></i> Student Enrollment by Department</div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Current Active Session</span>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="chart-enrollment"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title"><i class="fa-solid fa-chart-pie" style="color: var(--secondary);"></i> Academic Grade Distribution</div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">Exam Performance</span>
+                </div>
+                <div class="card-body">
+                  <div class="chart-container">
+                    <canvas id="chart-grades"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Dashboard Rows -->
+            <div class="dashboard-grid-2">
+              <!-- Recent Students Table -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title"><i class="fa-solid fa-user-plus" style="color: var(--success);"></i> Recent Student Registrations</div>
+                  <button class="btn btn-sm btn-secondary" onclick="app.navigateTo('students')">View All</button>
+                </div>
+                <div class="table-responsive" style="border: none;">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Student Name</th>
+                        <th>Department</th>
+                        <th>Class</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-recent-students-tbody">
+                      <!-- Populated dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Upcoming Exams & Activity -->
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-regular fa-calendar-days" style="color: var(--warning);"></i> Upcoming Examinations</div>
+                    <button class="btn btn-sm btn-secondary" onclick="app.navigateTo('exams')">All Exams</button>
+                  </div>
+                  <div class="card-body" style="padding: 1rem 1.25rem;" id="dash-upcoming-exams-list">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--info);"></i> Recent Activity Feed</div>
+                  </div>
+                  <div class="card-body" style="padding: 1rem 1.25rem;" id="dash-activity-feed">
+                    <!-- Populated dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               2. STUDENT MANAGEMENT MODULE (CORE)
+               ================================================================ -->
+          <section class="view-section" id="view-students">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-user-graduate" style="color: var(--primary);"></i> Student Management</h2>
+                <p class="view-subtitle">Manage student enrollment, personal details, academic history, and comprehensive profiles.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-students-csv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                <button class="btn btn-primary" id="btn-open-add-student-modal"><i class="fa-solid fa-user-plus"></i> Add New Student</button>
+              </div>
+            </div>
+
+            <!-- Filter & Search Controls -->
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="students-search-input" placeholder="Search by name, ID, or phone...">
+                </div>
+                <select class="select-filter" id="students-filter-dept">
+                  <option value="ALL">All Departments</option>
+                  <!-- Populated dynamically -->
+                </select>
+                <select class="select-filter" id="students-filter-class">
+                  <option value="ALL">All Classes</option>
+                  <!-- Populated dynamically -->
+                </select>
+                <select class="select-filter" id="students-filter-status">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Graduated">Graduated</option>
+                  <option value="Suspended">Suspended</option>
+                </select>
+              </div>
+              <div class="filter-right">
+                <span style="font-size: 0.82rem; color: var(--text-muted);" id="students-count-badge">Showing 0 students</span>
+              </div>
+            </div>
+
+            <!-- Student Data Table -->
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Reg No / ID</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Class</th>
+                    <th>Semester</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="students-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination-container" id="students-pagination">
+              <div>Page <span id="students-current-page">1</span> of <span id="students-total-pages">1</span></div>
+              <div class="pagination-pages" id="students-pagination-buttons">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               3. TEACHER MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-teachers">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-chalkboard-user" style="color: var(--primary);"></i> Faculty &amp; Teachers</h2>
+                <p class="view-subtitle">Manage university professors, lecturers, subject specializations, and departmental assignments.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-teachers-csv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                <button class="btn btn-primary" id="btn-open-add-teacher-modal"><i class="fa-solid fa-plus"></i> Add New Teacher</button>
+              </div>
+            </div>
+
+            <!-- Teacher Filters -->
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="teachers-search-input" placeholder="Search by name, ID or specialization...">
+                </div>
+                <select class="select-filter" id="teachers-filter-dept">
+                  <option value="ALL">All Departments</option>
+                </select>
+              </div>
+              <div class="filter-right">
+                <span style="font-size: 0.82rem; color: var(--text-muted);" id="teachers-count-badge">Showing 0 faculty members</span>
+              </div>
+            </div>
+
+            <!-- Teachers Table -->
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Teacher ID</th>
+                    <th>Faculty Name</th>
+                    <th>Department</th>
+                    <th>Qualification</th>
+                    <th>Specialization</th>
+                    <th>Phone / Email</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="teachers-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               4. DEPARTMENT MANAGEMENT
+               ================================================================ -->
+          <section class="view-section" id="view-departments">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-building-columns" style="color: var(--primary);"></i> Academic Departments</h2>
+                <p class="view-subtitle">Manage university faculties, Department Heads (HODs), enrolled students, and staff.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-primary" id="btn-open-add-dept-modal"><i class="fa-solid fa-plus"></i> Add Department</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="dept-search-input" placeholder="Search department name or ID...">
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Department ID</th>
+                    <th>Department Name</th>
+                    <th>Head of Department (HOD)</th>
+                    <th>Description</th>
+                    <th>Students</th>
+                    <th>Faculty</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="departments-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               5. CLASS MANAGEMENT
+               ================================================================ -->
+          <section class="view-section" id="view-classes">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-users-rectangle" style="color: var(--primary);"></i> Classes &amp; Sections</h2>
+                <p class="view-subtitle">Organize academic cohorts, assigned class teachers, sessions, and student capacity.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-primary" id="btn-open-add-class-modal"><i class="fa-solid fa-plus"></i> Add New Class</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="class-search-input" placeholder="Search class name or ID...">
+                </div>
+                <select class="select-filter" id="class-filter-dept">
+                  <option value="ALL">All Departments</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Class ID</th>
+                    <th>Class Name</th>
+                    <th>Department</th>
+                    <th>Semester</th>
+                    <th>Academic Session</th>
+                    <th>Assigned Class Teacher</th>
+                    <th>Total Students</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="classes-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               6. ATTENDANCE MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-attendance">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-clipboard-user" style="color: var(--primary);"></i> Attendance Management</h2>
+                <p class="view-subtitle">Daily roll call register, automatic percentage tracking, and historical logs.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-att-csv"><i class="fa-solid fa-file-csv"></i> Export Sheet</button>
+                <button class="btn btn-success" id="btn-save-attendance"><i class="fa-solid fa-floppy-disk"></i> Save Attendance</button>
+              </div>
+            </div>
+
+            <!-- Attendance Control Bar -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+              <div class="card-body">
+                <div class="form-grid grid-3">
+                  <div class="form-group">
+                    <label class="form-label" for="att-select-class">Select Class <span class="required">*</span></label>
+                    <select class="form-control" id="att-select-class">
+                      <!-- Populated dynamically -->
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="att-date-picker">Date <span class="required">*</span></label>
+                    <input type="date" class="form-control" id="att-date-picker">
+                  </div>
+
+                  <div class="form-group" style="justify-content: flex-end;">
+                    <label class="form-label">&nbsp;</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                      <button type="button" class="btn btn-outline-primary" id="btn-load-attendance" style="flex: 1;">
+                        <i class="fa-solid fa-filter"></i> Load Register
+                      </button>
+                      <button type="button" class="btn btn-secondary" id="btn-mark-all-present" title="Mark Everyone Present">
+                        <i class="fa-solid fa-check-double"></i> All Present
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Live Attendance Statistics Bar -->
+                <div style="display: flex; gap: 1.5rem; margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border-color); flex-wrap: wrap;">
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Students:</span>
+                    <strong style="font-size: 1.1rem; margin-left: 6px;" id="att-stat-total">0</strong>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--success); font-weight: 700; text-transform: uppercase;">Present:</span>
+                    <strong style="font-size: 1.1rem; margin-left: 6px; color: var(--success);" id="att-stat-present">0</strong>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--danger); font-weight: 700; text-transform: uppercase;">Absent:</span>
+                    <strong style="font-size: 1.1rem; margin-left: 6px; color: var(--danger);" id="att-stat-absent">0</strong>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; color: var(--warning-hover); font-weight: 700; text-transform: uppercase;">Late:</span>
+                    <strong style="font-size: 1.1rem; margin-left: 6px; color: var(--warning-hover);" id="att-stat-late">0</strong>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; color: #7c3aed; font-weight: 700; text-transform: uppercase;">Leave:</span>
+                    <strong style="font-size: 1.1rem; margin-left: 6px; color: #7c3aed;" id="att-stat-leave">0</strong>
+                  </div>
+                  <div style="margin-left: auto;">
+                    <span style="font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">Attendance Rate:</span>
+                    <strong style="font-size: 1.2rem; margin-left: 6px; color: var(--primary);" id="att-stat-percentage">0.0%</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Attendance Marking Register -->
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Roll / Reg No</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Class</th>
+                    <th>Semester</th>
+                    <th style="text-align: center;">Mark Attendance Status</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-sheet-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               7. EXAMINATION MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-exams">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-file-signature" style="color: var(--primary);"></i> Examination Schedule</h2>
+                <p class="view-subtitle">Organize midterms, finals, practical labs, and invigilation duties.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-exams-csv"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+                <button class="btn btn-primary" id="btn-open-add-exam-modal"><i class="fa-solid fa-plus"></i> Schedule New Exam</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="exams-search-input" placeholder="Search exam title, subject, or code...">
+                </div>
+                <select class="select-filter" id="exams-filter-dept">
+                  <option value="ALL">All Departments</option>
+                </select>
+                <select class="select-filter" id="exams-filter-semester">
+                  <option value="ALL">All Semesters</option>
+                  <option value="Semester 1">Semester 1</option>
+                  <option value="Semester 2">Semester 2</option>
+                  <option value="Semester 3">Semester 3</option>
+                  <option value="Semester 4">Semester 4</option>
+                  <option value="Semester 5">Semester 5</option>
+                  <option value="Semester 6">Semester 6</option>
+                  <option value="Semester 7">Semester 7</option>
+                  <option value="Semester 8">Semester 8</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Exam ID</th>
+                    <th>Exam Name</th>
+                    <th>Department</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Date &amp; Time</th>
+                    <th>Total / Pass Marks</th>
+                    <th>Invigilator</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="exams-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               8. RESULT MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-results">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-square-poll-vertical" style="color: var(--primary);"></i> Student Results &amp; Grades</h2>
+                <p class="view-subtitle">Record exam scores, automatic percentage calculation, grading system (A+, A, B, C, D, F) and transcript generation.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-results-csv"><i class="fa-solid fa-file-csv"></i> Export Results</button>
+                <button class="btn btn-primary" id="btn-open-add-result-modal"><i class="fa-solid fa-plus"></i> Record New Result</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="results-search-input" placeholder="Search by student ID, name or subject...">
+                </div>
+                <select class="select-filter" id="results-filter-dept">
+                  <option value="ALL">All Departments</option>
+                </select>
+                <select class="select-filter" id="results-filter-status">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Pass">Passed</option>
+                  <option value="Fail">Failed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Department / Class</th>
+                    <th>Exam Title</th>
+                    <th>Subject</th>
+                    <th>Total Marks</th>
+                    <th>Obtained</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="results-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               9. FEE MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-fees">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Fee Management &amp; Dues</h2>
+                <p class="view-subtitle">Track semester tuition fees, admission charges, pending arrears, and payment receipts.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-export-fees-csv"><i class="fa-solid fa-file-csv"></i> Export Fees CSV</button>
+                <button class="btn btn-primary" id="btn-open-add-fee-modal"><i class="fa-solid fa-plus"></i> Issue Fee Voucher</button>
+              </div>
+            </div>
+
+            <!-- Fee Metric Cards -->
+            <div class="stats-grid" style="margin-bottom: 1.5rem;">
+              <div class="stat-card">
+                <div class="stat-icon color-blue">
+                  <i class="fa-solid fa-money-bill-wave"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Fee Assessed</div>
+                  <div class="stat-value" id="fee-stat-total">$0</div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-emerald">
+                  <i class="fa-solid fa-circle-dollar-to-slot"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Total Collected</div>
+                  <div class="stat-value" id="fee-stat-collected">$0</div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-rose">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Outstanding Due</div>
+                  <div class="stat-value" id="fee-stat-outstanding">$0</div>
+                </div>
+              </div>
+
+              <div class="stat-card">
+                <div class="stat-icon color-indigo">
+                  <i class="fa-solid fa-users-viewfinder"></i>
+                </div>
+                <div class="stat-info">
+                  <div class="stat-label">Paid vs Unpaid</div>
+                  <div class="stat-value" style="font-size: 1.3rem;">
+                    <span style="color: var(--success);" id="fee-stat-paid-count">0</span> / 
+                    <span style="color: var(--danger);" id="fee-stat-unpaid-count">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <div class="search-input-group">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="fees-search-input" placeholder="Search by student name or ID...">
+                </div>
+                <select class="select-filter" id="fees-filter-status">
+                  <option value="ALL">All Payment Statuses</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Partial">Partial</option>
+                  <option value="Unpaid">Unpaid</option>
+                </select>
+                <select class="select-filter" id="fees-filter-type">
+                  <option value="ALL">All Fee Types</option>
+                  <option value="Tuition Fee">Tuition Fee</option>
+                  <option value="Admission Fee">Admission Fee</option>
+                  <option value="Examination Fee">Examination Fee</option>
+                  <option value="Other Fee">Other Fee</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Department / Class</th>
+                    <th>Fee Type</th>
+                    <th>Total Fee</th>
+                    <th>Paid Amount</th>
+                    <th>Remaining</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="fees-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               10. TIMETABLE MANAGEMENT MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-timetable">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-calendar-days" style="color: var(--primary);"></i> Timetable &amp; Class Schedule</h2>
+                <p class="view-subtitle">Weekly lecture routines, laboratory sessions, room allotments, and instructor schedules.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-primary" id="btn-open-add-timetable-modal"><i class="fa-solid fa-plus"></i> Add Timetable Slot</button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-left">
+                <select class="select-filter" id="timetable-filter-class">
+                  <option value="ALL">All Classes</option>
+                </select>
+                <select class="select-filter" id="timetable-filter-day">
+                  <option value="ALL">All Days</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Visual Weekly Grid View -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+              <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-calendar-week" style="color: var(--primary);"></i> Weekly Lecture Grid</div>
+              </div>
+              <div class="table-responsive" style="border: none;">
+                <table class="timetable-grid-table" id="timetable-weekly-grid">
+                  <thead>
+                    <tr>
+                      <th style="width: 16%;">Monday</th>
+                      <th style="width: 16%;">Tuesday</th>
+                      <th style="width: 16%;">Wednesday</th>
+                      <th style="width: 16%;">Thursday</th>
+                      <th style="width: 16%;">Friday</th>
+                      <th style="width: 20%;">Saturday</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="grid-col-Monday"></td>
+                      <td id="grid-col-Tuesday"></td>
+                      <td id="grid-col-Wednesday"></td>
+                      <td id="grid-col-Thursday"></td>
+                      <td id="grid-col-Friday"></td>
+                      <td id="grid-col-Saturday"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Timetable List Table -->
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Time</th>
+                    <th>Subject</th>
+                    <th>Class / Section</th>
+                    <th>Room</th>
+                    <th>Instructor</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="timetable-table-body">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               11. REPORTS AND ANALYTICS MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-reports">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-file-excel" style="color: var(--primary);"></i> Reports &amp; Academic Analytics</h2>
+                <p class="view-subtitle">Generate exportable CSV sheets, official printable transcripts, and institutional summaries.</p>
+              </div>
+              <div class="view-actions">
+                <button class="btn btn-secondary" id="btn-print-active-report"><i class="fa-solid fa-print"></i> Print Report</button>
+                <button class="btn btn-primary" id="btn-export-active-report-csv"><i class="fa-solid fa-download"></i> Download CSV</button>
+              </div>
+            </div>
+
+            <!-- Report Selector Tabs -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+              <div class="modal-tabs" style="border-top-left-radius: var(--radius-lg); border-top-right-radius: var(--radius-lg);">
+                <button class="modal-tab-btn active" data-report="students"><i class="fa-solid fa-user-graduate"></i> Student Report</button>
+                <button class="modal-tab-btn" data-report="departments"><i class="fa-solid fa-building-columns"></i> Department Report</button>
+                <button class="modal-tab-btn" data-report="attendance"><i class="fa-solid fa-clipboard-user"></i> Attendance Report</button>
+                <button class="modal-tab-btn" data-report="results"><i class="fa-solid fa-square-poll-vertical"></i> Results Report</button>
+                <button class="modal-tab-btn" data-report="fees"><i class="fa-solid fa-receipt"></i> Fee Collection Report</button>
+                <button class="modal-tab-btn" data-report="teachers"><i class="fa-solid fa-chalkboard-user"></i> Faculty Report</button>
+              </div>
+
+              <div class="card-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+                  <div>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);" id="report-title-display">University Student Enrollment Report</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary);" id="report-desc-display">Detailed roster of all registered students with current academic standing.</p>
+                  </div>
+                  <div style="font-size: 0.85rem; color: var(--text-muted);">
+                    Generated: <strong id="report-timestamp"></strong>
+                  </div>
+                </div>
+
+                <div class="table-responsive" style="max-height: 520px;">
+                  <table class="data-table" id="report-data-table">
+                    <thead id="report-table-head">
+                      <!-- Dynamic -->
+                    </thead>
+                    <tbody id="report-table-body">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ================================================================
+               12. SETTINGS & PROFILE MODULE
+               ================================================================ -->
+          <section class="view-section" id="view-settings">
+            <div class="view-header">
+              <div class="view-title-area">
+                <h2><i class="fa-solid fa-gear" style="color: var(--primary);"></i> Settings &amp; Platform Information</h2>
+                <p class="view-subtitle">Manage administrative credentials, dark mode theme preferences, and demo storage state.</p>
+              </div>
+            </div>
+
+            <div class="dashboard-grid-2">
+              <!-- Admin Profile & Password -->
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-id-badge" style="color: var(--primary);"></i> Institutional Profile</div>
+                  </div>
+                  <div class="card-body">
+                    <form id="admin-profile-form">
+                      <div class="form-grid">
+                        <div class="form-group">
+                          <label class="form-label" for="setting-admin-name">Full Name</label>
+                          <input type="text" class="form-control" id="setting-admin-name" value="Dr. Tariq Mahmood">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="setting-admin-email">Institutional Email</label>
+                          <input type="email" class="form-control" id="setting-admin-email" value="admin@sms.com">
+                        </div>
+                        <div class="form-group form-full">
+                          <label class="form-label" for="setting-admin-title">Designation / Role Title</label>
+                          <input type="text" class="form-control" id="setting-admin-title" value="Head of Academic Administration">
+                        </div>
+                      </div>
+                      <div style="margin-top: 1.25rem; text-align: right;">
+                        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-lock" style="color: var(--warning);"></i> Security &amp; Password (Demo)</div>
+                  </div>
+                  <div class="card-body">
+                    <form id="change-password-form">
+                      <div class="form-group" style="margin-bottom: 1rem;">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" class="form-control" value="admin123" placeholder="Current password">
+                      </div>
+                      <div class="form-grid">
+                        <div class="form-group">
+                          <label class="form-label">New Password</label>
+                          <input type="password" class="form-control" placeholder="New password" id="setting-new-pass">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label">Confirm Password</label>
+                          <input type="password" class="form-control" placeholder="Confirm password" id="setting-confirm-pass">
+                        </div>
+                      </div>
+                      <div style="margin-top: 1.25rem; text-align: right;">
+                        <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-key"></i> Update Password</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Data Management & University Info -->
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-database" style="color: var(--danger);"></i> LocalStorage Data Operations</div>
+                  </div>
+                  <div class="card-body">
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                      This application stores all persistent records (students, faculty, attendance, grades, and fees) directly in the browser's <strong>HTML5 LocalStorage</strong>.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                      <button class="btn btn-secondary" id="btn-setting-reset-data" style="justify-content: flex-start;">
+                        <i class="fa-solid fa-rotate-left" style="color: var(--warning);"></i> Reset &amp; Reload Realistic Demo Data
+                      </button>
+                      <button class="btn btn-secondary" id="btn-setting-export-json" style="justify-content: flex-start;">
+                        <i class="fa-solid fa-file-code" style="color: var(--primary);"></i> Backup / Export All Data (JSON)
+                      </button>
+                      <button class="btn btn-secondary" id="btn-setting-clear-all" style="justify-content: flex-start; color: var(--danger);">
+                        <i class="fa-solid fa-trash-can" style="color: var(--danger);"></i> Wipe Local Database
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-title"><i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> System Specifications</div>
+                  </div>
+                  <div class="card-body" style="font-size: 0.85rem;">
+                    <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Application:</span>
+                        <strong>Student Management System (SMS)</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Degree Level:</span>
+                        <strong>BSIT University Capstone / Project</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Technology:</span>
+                        <strong>Vanilla JS (ES6+), HTML5, CSS3</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Persistence:</span>
+                        <strong>Browser LocalStorage API</strong>
+                      </div>
+                      <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--text-muted);">Responsive Design:</span>
+                        <strong>Desktop, Laptop, Tablet &amp; Mobile</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </main>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         MODALS & DIALOGS
+         ====================================================================== -->
+
+    <!-- 1. STUDENT ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-student">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-student-title">
+            <i class="fa-solid fa-user-plus" style="color: var(--primary);"></i> Add New Student
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-student">&times;</button>
+        </div>
+        <form id="form-student" novalidate>
+          <input type="hidden" id="student-form-mode" value="add">
+          <input type="hidden" id="student-original-id" value="">
+          <div class="modal-body">
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 0.85rem; letter-spacing: 0.05em;">
+              <i class="fa-solid fa-user"></i> Personal Information
+            </h4>
+            <div class="form-grid grid-3" style="margin-bottom: 1.25rem;">
+              <div class="form-group">
+                <label class="form-label" for="stu-name">Full Name <span class="required">*</span></label>
+                <input type="text" id="stu-name" class="form-control" placeholder="e.g. Muhammad Hamza" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-father-name">Father Name <span class="required">*</span></label>
+                <input type="text" id="stu-father-name" class="form-control" placeholder="e.g. Tariq Mehmood" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-gender">Gender <span class="required">*</span></label>
+                <select id="stu-gender" class="form-control" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-dob">Date of Birth <span class="required">*</span></label>
+                <input type="date" id="stu-dob" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-cnic">CNIC / B-Form <span class="required">*</span></label>
+                <input type="text" id="stu-cnic" class="form-control" placeholder="e.g. 35201-1234567-1" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-phone">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="stu-phone" class="form-control" placeholder="e.g. +92 300 1234567" required>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="stu-email">Institutional Email <span class="required">*</span></label>
+                <input type="email" id="stu-email" class="form-control" placeholder="e.g. hamza@student.sms.com" required>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="stu-address">Residential Address</label>
+                <textarea id="stu-address" class="form-control" placeholder="Enter complete residential address..."></textarea>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="stu-photo">Photograph URL (Optional)</label>
+                <input type="url" id="stu-photo" class="form-control" placeholder="https://example.com/photo.jpg (or leave blank for avatar)">
+              </div>
+            </div>
+
+            <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 0.85rem; letter-spacing: 0.05em; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+              <i class="fa-solid fa-graduation-cap"></i> Academic Information
+            </h4>
+            <div class="form-grid grid-3">
+              <div class="form-group">
+                <label class="form-label" for="stu-id">Student Reg No / ID <span class="required">*</span></label>
+                <input type="text" id="stu-id" class="form-control mono" placeholder="e.g. STU-2024-001" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-dept">Department <span class="required">*</span></label>
+                <select id="stu-dept" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-class">Class / Section <span class="required">*</span></label>
+                <select id="stu-class" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-semester">Semester <span class="required">*</span></label>
+                <select id="stu-semester" class="form-control" required>
+                  <option value="Semester 1">Semester 1</option>
+                  <option value="Semester 2">Semester 2</option>
+                  <option value="Semester 3">Semester 3</option>
+                  <option value="Semester 4">Semester 4</option>
+                  <option value="Semester 5">Semester 5</option>
+                  <option value="Semester 6">Semester 6</option>
+                  <option value="Semester 7">Semester 7</option>
+                  <option value="Semester 8">Semester 8</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-session">Academic Session <span class="required">*</span></label>
+                <input type="text" id="stu-session" class="form-control" value="2024-2028" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-admission-date">Admission Date <span class="required">*</span></label>
+                <input type="date" id="stu-admission-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="stu-status">Student Status <span class="required">*</span></label>
+                <select id="stu-status" class="form-control" required>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Graduated">Graduated</option>
+                  <option value="Suspended">Suspended</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-student">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-student-submit">Save Student Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. STUDENT COMPREHENSIVE PROFILE MODAL (5 TABS) -->
+    <div class="modal-overlay" id="modal-student-profile">
+      <div class="modal-dialog modal-xl" style="padding: 0;">
+        <div class="profile-modal-header-hero">
+          <img src="" alt="Student Profile" class="profile-hero-avatar" id="view-stu-photo">
+          <div class="profile-hero-info">
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+              <h3 id="view-stu-name">Muhammad Hamza</h3>
+              <span class="status-badge active" id="view-stu-status-badge">Active</span>
+            </div>
+            <div class="profile-hero-sub">
+              <span><i class="fa-solid fa-id-badge"></i> <strong id="view-stu-id" class="mono">STU-2024-001</strong></span>
+              <span><i class="fa-solid fa-building-columns"></i> <span id="view-stu-dept">BSIT</span></span>
+              <span><i class="fa-solid fa-users-rectangle"></i> <span id="view-stu-class">BSIT-4A</span></span>
+              <span><i class="fa-solid fa-graduation-cap"></i> <span id="view-stu-session">2024-2028</span></span>
+            </div>
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-student-profile" style="color: #ffffff; position: absolute; top: 1.25rem; right: 1.5rem;">&times;</button>
+        </div>
+
+        <!-- 5 Tabs Navigation -->
+        <div class="modal-tabs">
+          <button class="modal-tab-btn active" data-tab="tab-personal"><i class="fa-solid fa-id-card"></i> Personal Info</button>
+          <button class="modal-tab-btn" data-tab="tab-academic"><i class="fa-solid fa-book-open"></i> Academic Info</button>
+          <button class="modal-tab-btn" data-tab="tab-att-hist"><i class="fa-solid fa-calendar-check"></i> Attendance Record</button>
+          <button class="modal-tab-btn" data-tab="tab-results-hist"><i class="fa-solid fa-award"></i> Exam Results</button>
+          <button class="modal-tab-btn" data-tab="tab-fees-hist"><i class="fa-solid fa-file-invoice-dollar"></i> Fee History</button>
+        </div>
+
+        <div class="modal-body" style="min-height: 380px;">
+          <!-- Tab 1: Personal -->
+          <div class="tab-pane active" id="tab-personal">
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Father's Name</span>
+                <span class="detail-value" id="vp-father-name">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Gender</span>
+                <span class="detail-value" id="vp-gender">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Date of Birth</span>
+                <span class="detail-value" id="vp-dob">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">CNIC / B-Form</span>
+                <span class="detail-value mono" id="vp-cnic">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Phone Number</span>
+                <span class="detail-value" id="vp-phone">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Institutional Email</span>
+                <span class="detail-value" id="vp-email">-</span>
+              </div>
+              <div class="detail-item" style="grid-column: 1 / -1;">
+                <span class="detail-label">Residential Address</span>
+                <span class="detail-value" id="vp-address">-</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Academic -->
+          <div class="tab-pane" id="tab-academic">
+            <div class="details-grid">
+              <div class="detail-item">
+                <span class="detail-label">Registration / Roll No</span>
+                <span class="detail-value mono" id="vp-id">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Department</span>
+                <span class="detail-value" id="vp-dept">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Class Cohort</span>
+                <span class="detail-value" id="vp-class">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Current Semester</span>
+                <span class="detail-value" id="vp-semester">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Academic Session</span>
+                <span class="detail-value" id="vp-session">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Admission Date</span>
+                <span class="detail-value" id="vp-admission-date">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Academic Standing</span>
+                <span class="detail-value" id="vp-standing">Good Standing</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Attendance -->
+          <div class="tab-pane" id="tab-att-hist">
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 1.25rem; padding: 1rem; background: var(--bg-muted); border-radius: var(--radius-md);">
+              <div>Total Recorded: <strong id="vp-att-total">0</strong></div>
+              <div>Present: <strong style="color: var(--success);" id="vp-att-present">0</strong></div>
+              <div>Absent: <strong style="color: var(--danger);" id="vp-att-absent">0</strong></div>
+              <div>Percentage: <strong style="color: var(--primary);" id="vp-att-pct">0%</strong></div>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="vp-att-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 4: Results -->
+          <div class="tab-pane" id="tab-results-hist">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Exam</th>
+                    <th>Subject</th>
+                    <th>Total</th>
+                    <th>Obtained</th>
+                    <th>Percentage</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="vp-results-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 5: Fees -->
+          <div class="tab-pane" id="tab-fees-hist">
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Fee Type</th>
+                    <th>Total Fee</th>
+                    <th>Paid Amount</th>
+                    <th>Remaining Due</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="vp-fees-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-student-profile">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. TEACHER ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-teacher">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-teacher-title">
+            <i class="fa-solid fa-chalkboard-user" style="color: var(--primary);"></i> Add Faculty Member
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-teacher">&times;</button>
+        </div>
+        <form id="form-teacher" novalidate>
+          <input type="hidden" id="teacher-form-mode" value="add">
+          <input type="hidden" id="teacher-original-id" value="">
+          <div class="modal-body">
+            <div class="form-grid grid-3">
+              <div class="form-group">
+                <label class="form-label" for="t-id">Teacher ID <span class="required">*</span></label>
+                <input type="text" id="t-id" class="form-control mono" placeholder="e.g. TCH-101" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-name">Full Name <span class="required">*</span></label>
+                <input type="text" id="t-name" class="form-control" placeholder="e.g. Dr. Tariq Mahmood" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-father-name">Father Name</label>
+                <input type="text" id="t-father-name" class="form-control" placeholder="e.g. Mahmood Ali">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-gender">Gender</label>
+                <select id="t-gender" class="form-control">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-dept">Department <span class="required">*</span></label>
+                <select id="t-dept" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-qualification">Qualification <span class="required">*</span></label>
+                <input type="text" id="t-qualification" class="form-control" placeholder="e.g. Ph.D Computer Science" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-subject">Specialization <span class="required">*</span></label>
+                <input type="text" id="t-subject" class="form-control" placeholder="e.g. Artificial Intelligence" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-phone">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="t-phone" class="form-control" placeholder="+92 321 9876543" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-email">Email Address <span class="required">*</span></label>
+                <input type="email" id="t-email" class="form-control" placeholder="tariq@sms.com" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-joining-date">Joining Date <span class="required">*</span></label>
+                <input type="date" id="t-joining-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-salary">Monthly Salary ($)</label>
+                <input type="number" id="t-salary" class="form-control" placeholder="e.g. 3500">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="t-status">Status</label>
+                <select id="t-status" class="form-control">
+                  <option value="Active">Active</option>
+                  <option value="On Leave">On Leave</option>
+                  <option value="Resigned">Resigned</option>
+                </select>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="t-address">Address</label>
+                <input type="text" id="t-address" class="form-control" placeholder="Office / Home address">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-teacher">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Faculty Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 4. DEPARTMENT ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-department">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-dept-title">
+            <i class="fa-solid fa-building-columns" style="color: var(--primary);"></i> Add Academic Department
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-department">&times;</button>
+        </div>
+        <form id="form-department" novalidate>
+          <input type="hidden" id="dept-form-mode" value="add">
+          <input type="hidden" id="dept-original-id" value="">
+          <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="d-id">Department ID / Code <span class="required">*</span></label>
+              <input type="text" id="d-id" class="form-control mono" placeholder="e.g. BSIT" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="d-name">Department Name <span class="required">*</span></label>
+              <input type="text" id="d-name" class="form-control" placeholder="e.g. Department of Information Technology" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="d-head">Head of Department (HOD) <span class="required">*</span></label>
+              <input type="text" id="d-head" class="form-control" placeholder="e.g. Prof. Dr. Tariq Mahmood" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="d-desc">Description</label>
+              <textarea id="d-desc" class="form-control" placeholder="Brief outline of academic disciplines offered..."></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-department">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Department</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 5. CLASS ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-class">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-class-title">
+            <i class="fa-solid fa-users-rectangle" style="color: var(--primary);"></i> Add Class &amp; Section
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-class">&times;</button>
+        </div>
+        <form id="form-class" novalidate>
+          <input type="hidden" id="class-form-mode" value="add">
+          <input type="hidden" id="class-original-id" value="">
+          <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="c-id">Class ID <span class="required">*</span></label>
+              <input type="text" id="c-id" class="form-control mono" placeholder="e.g. CLS-BSIT-4A" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="c-name">Class Name <span class="required">*</span></label>
+              <input type="text" id="c-name" class="form-control" placeholder="e.g. BSIT-4A" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="c-dept">Department <span class="required">*</span></label>
+              <select id="c-dept" class="form-control" required>
+                <!-- Dynamic -->
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="c-semester">Semester <span class="required">*</span></label>
+              <select id="c-semester" class="form-control" required>
+                <option value="Semester 1">Semester 1</option>
+                <option value="Semester 2">Semester 2</option>
+                <option value="Semester 3">Semester 3</option>
+                <option value="Semester 4">Semester 4</option>
+                <option value="Semester 5">Semester 5</option>
+                <option value="Semester 6">Semester 6</option>
+                <option value="Semester 7">Semester 7</option>
+                <option value="Semester 8">Semester 8</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="c-session">Academic Session <span class="required">*</span></label>
+              <input type="text" id="c-session" class="form-control" value="2024-2028" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="c-teacher">Assigned Class Teacher <span class="required">*</span></label>
+              <select id="c-teacher" class="form-control" required>
+                <!-- Dynamic -->
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-class">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Class</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 6. EXAMINATION ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-exam">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-exam-title">
+            <i class="fa-solid fa-file-signature" style="color: var(--primary);"></i> Schedule Examination
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-exam">&times;</button>
+        </div>
+        <form id="form-exam" novalidate>
+          <input type="hidden" id="exam-form-mode" value="add">
+          <input type="hidden" id="exam-original-id" value="">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="ex-id">Exam ID <span class="required">*</span></label>
+                <input type="text" id="ex-id" class="form-control mono" placeholder="e.g. EX-2024-01" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-name">Exam Title <span class="required">*</span></label>
+                <input type="text" id="ex-name" class="form-control" placeholder="e.g. Midterm Fall 2024" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-dept">Department <span class="required">*</span></label>
+                <select id="ex-dept" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-class">Target Class <span class="required">*</span></label>
+                <select id="ex-class" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-subject">Subject <span class="required">*</span></label>
+                <input type="text" id="ex-subject" class="form-control" placeholder="e.g. Web Technologies" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-date">Exam Date <span class="required">*</span></label>
+                <input type="date" id="ex-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-total-marks">Total Marks <span class="required">*</span></label>
+                <input type="number" id="ex-total-marks" class="form-control" value="100" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="ex-pass-marks">Passing Marks <span class="required">*</span></label>
+                <input type="number" id="ex-pass-marks" class="form-control" value="50" required>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="ex-teacher">Invigilator / Examiner <span class="required">*</span></label>
+                <select id="ex-teacher" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-exam">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Examination</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 7. RESULT ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-result">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-result-title">
+            <i class="fa-solid fa-square-poll-vertical" style="color: var(--primary);"></i> Record Student Result
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-result">&times;</button>
+        </div>
+        <form id="form-result" novalidate>
+          <input type="hidden" id="res-form-mode" value="add">
+          <input type="hidden" id="res-original-id" value="">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group form-full">
+                <label class="form-label" for="res-student-select">Select Student <span class="required">*</span></label>
+                <select id="res-student-select" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-exam-select">Select Examination <span class="required">*</span></label>
+                <select id="res-exam-select" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-subject">Subject <span class="required">*</span></label>
+                <input type="text" id="res-subject" class="form-control" placeholder="e.g. Web Technologies" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-total-marks">Total Marks <span class="required">*</span></label>
+                <input type="number" id="res-total-marks" class="form-control" value="100" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="res-obtained-marks">Obtained Marks <span class="required">*</span></label>
+                <input type="number" id="res-obtained-marks" class="form-control" placeholder="e.g. 88" required step="0.5">
+              </div>
+
+              <!-- Live Auto Computation Preview Box -->
+              <div class="form-group form-full" style="background: var(--bg-muted); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                  <div>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Calculated Percentage</span>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: var(--primary);" id="res-preview-pct">0.0%</div>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Grade Assigned</span>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main);" id="res-preview-grade">-</div>
+                  </div>
+                  <div>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Academic Status</span>
+                    <div id="res-preview-status"><span class="status-badge" style="background: #e2e8f0;">Pending</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-result">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Result</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 8. FEE ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-fee">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-fee-title">
+            <i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Issue Fee Record
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-fee">&times;</button>
+        </div>
+        <form id="form-fee" novalidate>
+          <input type="hidden" id="fee-form-mode" value="add">
+          <input type="hidden" id="fee-original-id" value="">
+          <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="fee-student-select">Select Student <span class="required">*</span></label>
+              <select id="fee-student-select" class="form-control" required>
+                <!-- Dynamic -->
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label" for="fee-type">Fee Type <span class="required">*</span></label>
+              <select id="fee-type" class="form-control" required>
+                <option value="Tuition Fee">Tuition Fee</option>
+                <option value="Admission Fee">Admission Fee</option>
+                <option value="Examination Fee">Examination Fee</option>
+                <option value="Other Fee">Other Fee</option>
+              </select>
+            </div>
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="fee-total">Total Amount ($) <span class="required">*</span></label>
+                <input type="number" id="fee-total" class="form-control" placeholder="e.g. 1200" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fee-paid">Paid Amount ($) <span class="required">*</span></label>
+                <input type="number" id="fee-paid" class="form-control" value="0" required>
+              </div>
+            </div>
+            <div class="form-grid" style="margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label" for="fee-due-date">Due Date <span class="required">*</span></label>
+                <input type="date" id="fee-due-date" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="fee-payment-date">Payment Date (Optional)</label>
+                <input type="date" id="fee-payment-date" class="form-control">
+              </div>
+            </div>
+            <div style="background: var(--bg-muted); padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem;">
+              Outstanding Balance: <strong id="fee-preview-remaining" style="color: var(--danger);">$0</strong>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-fee">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Fee Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 9. TIMETABLE ADD / EDIT MODAL -->
+    <div class="modal-overlay" id="modal-timetable">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <div class="modal-title" id="modal-timetable-title">
+            <i class="fa-solid fa-calendar-plus" style="color: var(--primary);"></i> Add Timetable Period
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-timetable">&times;</button>
+        </div>
+        <form id="form-timetable" novalidate>
+          <input type="hidden" id="tt-form-mode" value="add">
+          <input type="hidden" id="tt-original-id" value="">
+          <div class="modal-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="tt-class">Class <span class="required">*</span></label>
+                <select id="tt-class" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tt-day">Day <span class="required">*</span></label>
+                <select id="tt-day" class="form-control" required>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                </select>
+              </div>
+              <div class="form-group form-full">
+                <label class="form-label" for="tt-subject">Subject <span class="required">*</span></label>
+                <input type="text" id="tt-subject" class="form-control" placeholder="e.g. Database Systems" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tt-start-time">Start Time <span class="required">*</span></label>
+                <input type="time" id="tt-start-time" class="form-control" value="09:00" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tt-end-time">End Time <span class="required">*</span></label>
+                <input type="time" id="tt-end-time" class="form-control" value="10:30" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tt-room">Room / Lab No <span class="required">*</span></label>
+                <input type="text" id="tt-room" class="form-control" placeholder="e.g. Lab 3 / Hall B" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="tt-teacher">Teacher <span class="required">*</span></label>
+                <select id="tt-teacher" class="form-control" required>
+                  <!-- Dynamic -->
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-close-modal="modal-timetable">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Slot</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- 10. REUSABLE CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="modal-confirm">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-header">
+          <div class="modal-title" style="color: var(--danger);">
+            <i class="fa-solid fa-triangle-exclamation"></i> Confirm Action
+          </div>
+          <button class="modal-close-btn" data-close-modal="modal-confirm">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="confirm-modal-message" style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+            Are you sure you want to delete this record? This action cannot be reversed.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-confirm">Cancel</button>
+          <button type="button" class="btn btn-danger" id="btn-confirm-delete-action">Delete Record</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. PRINTABLE STUDENT RESULT CARD / TRANSCRIPT MODAL -->
+    <div class="modal-overlay" id="modal-result-card">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+          <div class="modal-title"><i class="fa-solid fa-award" style="color: var(--primary);"></i> Academic Result Card</div>
+          <button class="modal-close-btn" data-close-modal="modal-result-card">&times;</button>
+        </div>
+        <div class="modal-body" id="printable-result-card-content">
+          <div style="border: 2px solid var(--primary); border-radius: var(--radius-lg); padding: 2rem; background: var(--bg-surface);">
+            <div style="text-align: center; border-bottom: 2px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+              <h2 style="font-size: 1.5rem; color: var(--primary); font-weight: 800;">UNIVERSITY ACADEMIC TRANSCRIPT</h2>
+              <p style="font-size: 0.85rem; color: var(--text-secondary);">Office of Examinations &bull; Official Student Result Card</p>
+            </div>
+            <div class="details-grid" style="margin-bottom: 1.5rem;">
+              <div>Student Name: <strong id="rc-name">-</strong></div>
+              <div>Student ID: <strong id="rc-id" class="mono">-</strong></div>
+              <div>Department: <strong id="rc-dept">-</strong></div>
+              <div>Class / Semester: <strong id="rc-class">-</strong></div>
+              <div>Exam: <strong id="rc-exam">-</strong></div>
+              <div>Subject: <strong id="rc-subject">-</strong></div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: var(--bg-muted); border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+              <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Score Breakdown</div>
+              <div style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); margin: 0.25rem 0;">
+                <span id="rc-obtained">0</span> / <span id="rc-total">100</span>
+              </div>
+              <div style="font-size: 1.1rem; font-weight: 700;">
+                Percentage: <span id="rc-pct" style="color: var(--primary);">0%</span> &bull; Grade: <span id="rc-grade" style="color: var(--success);">A</span>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 2rem; padding-top: 1rem; border-top: 1px dashed var(--border-color); font-size: 0.8rem; color: var(--text-muted);">
+              <div>Issued by: Controller of Examinations</div>
+              <div>Date Generated: <span id="rc-date"></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="modal-result-card">Close</button>
+          <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Transcript</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vanilla JavaScript Core -->
+    <script type="module" src="/script.js"></script>
+  </body>
+</html>

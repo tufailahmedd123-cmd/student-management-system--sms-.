@@ -1,2 +1,20 @@
-# student-management-system--sms-.
-Student Management System (SMS) is a modern, responsive web application designed to simplify student administration and academic management. It features student registration, profile management, attendance tracking, class records, academic results, and an intuitive dashboard for efficient educational institution management.
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+</div>
+
+# Run and deploy your AI Studio app
+
+This contains everything you need to run your app locally.
+
+View your app in AI Studio: https://ai.studio/apps/86400fff-9533-44b2-8d95-0d22d0f76dc9
+
+## Run Locally
+
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

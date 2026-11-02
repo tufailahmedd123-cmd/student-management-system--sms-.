@@ -1,0 +1,6 @@
+{
+  "name": "Student Management System (SMS)",
+  "description": "Smart Student Administration & Academic Management Platform featuring student records, teacher management, attendance, exams, results, fee tracking, timetable, analytics, and reporting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
